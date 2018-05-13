@@ -37,38 +37,12 @@ def draw_networkx_edges(
        If numeric values are specified they will be mapped to
        colors using the edge_cmap and edge_vmin,edge_vmax parameters.
 
-    style : string
-       Edge line style (default='solid') (solid|dashed|dotted,dashdot)
-
     alpha : float
        The edge transparency (default=1.0)
 
-    edge_ cmap : Matplotlib colormap
+    edge_cmap : Matplotlib colormap
        Colormap for mapping intensities of edges (default=None)
-
-    edge_vmin,edge_vmax : floats
-       Minimum and maximum for edge colormap scaling (default=None)
-
-    ax : Matplotlib Axes object, optional
-       Draw the graph in the specified Matplotlib axes.
-
-    arrows : bool, optional (default=True)
-       For directed graphs, if True draw arrowheads.
-       Note: Arrows will be the same color as edges.
-
-    arrowstyle : str, optional (default='-|>')
-       For directed graphs, choose the style of the arrow heads.
-       See :py:class: `matplotlib.patches.ArrowStyle` for more
-       options.
-
-    arrowsize : int, optional (default=10)
-       For directed graphs, choose the size of the arrow head head's length and
-       width. See :py:class: `matplotlib.patches.FancyArrowPatch` for attribute
-       `mutation_scale` for more info.
-
-    label : [None| string]
-       Label for legend
-
+       
     Returns
     -------
     viz: ``altair.Chart`` object
@@ -195,7 +169,6 @@ def draw_networkx_nodes(
     cmap : Matplotlib colormap
        Colormap for mapping intensities of nodes (default=None)
 
-
     Returns
     -------
     viz: ``altair.Chart`` object
@@ -305,12 +278,6 @@ def draw_networkx(
 
     cmap : Matplotlib colormap, optional (default=None)
        Colormap for mapping intensities of nodes
-
-    vmin,vmax : float, optional (default=None)
-       Minimum and maximum for node colormap scaling
-
-    linewidths : [None | scalar | sequence]
-       Line width of symbol border (default =1.0)
 
     width : float, optional (default=1.0)
        Line width of edges
