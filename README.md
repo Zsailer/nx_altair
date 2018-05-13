@@ -86,6 +86,7 @@ If you have a feature request, please open an issue or submit a PR!
 A list of things to-do (good ideas for PRs).
 
 - [ ] Add `draw` method that mirrors networkx (easy)
+- [ ] Chart configs (i.e. chart height, weight, etc.) (easy)
 - [ ] Node color scale vmix, vmax (easy)
 - [ ] Edge color scale vmix, vmax (easy)
 - [ ] Node labels (medium)
