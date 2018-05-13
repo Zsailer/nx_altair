@@ -6,7 +6,7 @@
 
 **nx_altair** offers a similar **draw** API to NetworkX but returns Altair Charts instead.
 
-If you'd like to contribute, join the [Gitter chatroom](https://gitter.im/nx_altair/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link) and share your ideas! Also, checkout the [to-do list](#Todo-list) below.
+If you'd like to contribute, join the [Gitter chatroom](https://gitter.im/nx_altair/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link) and share your ideas! Also, checkout the [to-do list](#todo-list) below.
 
 ## Examples
 
