@@ -22,8 +22,7 @@ viz = nxa.draw_networkx(G, pos=pos)
 viz.interactive()
 ```
 
-![Altair networkx](docs/_img/readme.png)
-
+<img src="docs/_img/readme.png" width="250">
 
 ## Install
 
