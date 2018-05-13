@@ -1,0 +1,3 @@
+altair
+networkx
+pandas
