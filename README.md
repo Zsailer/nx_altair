@@ -2,6 +2,9 @@
 
 *Draw NetworkX graphs with Altair*
 
+This library is still under heavy maintenance! I'm currently working on adding
+all the functionality in NetworkX's draw functions. Stay tuned.
+
 ```python
 import networkx as nx
 import nx_altair as nxa
