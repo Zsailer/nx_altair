@@ -1,4 +1,4 @@
-# Networkx in Altair
+# nx_altair
 
 *Draw NetworkX graphs with Altair*
 
@@ -22,7 +22,42 @@ viz = nxa.draw_networkx(G, pos=pos)
 viz.interactive()
 ```
 
-<img src="docs/_img/readme.png" width="250">
+<img src="docs/_img/readme.png" width="350">
+
+nx_altair also supports many of the same arguments from NetworkX for styling your network.
+
+```python
+import networkx as nx
+import nx_altair as nxa
+import numpy as np
+
+# Generate a random graph
+G = nx.fast_gnp_random_graph(n=20, p=0.25)
+
+# Add weights to nodes and edges
+for n in G.nodes():
+    G.nodes[n]['weight'] = np.random.randn()
+
+for e in G.edges():
+    G.edges[e]['weight'] = np.random.uniform(1, 10)
+
+# Compute positions for viz.
+pos = nx.spring_layout(G)
+
+# Draw the graph using Altair
+viz = nxa.draw_networkx(
+    G, pos=pos,
+    node_color='weight',
+    cmap='viridis',
+    width='weight',
+    edge_color='black',
+)
+
+# Show it as an interactive plot!
+viz.interactive()
+```
+<img src="docs/_img/readme2.png" width="450">
+
 
 ## Install
 

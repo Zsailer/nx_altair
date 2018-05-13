@@ -93,7 +93,7 @@ def draw_networkx_edges(
 
     ###### Node size
     if isinstance(width, str):
-        encoded_attrs["strokeWidth"] = width
+        encoded_attrs["size"] = width
 
     elif isinstance(width, float) or isinstance(width, int):
         marker_attrs["strokeWidth"] = width
