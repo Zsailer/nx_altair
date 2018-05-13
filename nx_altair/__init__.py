@@ -1,1 +1,1 @@
-from .draw_altair import draw
+from .draw_altair import draw_networkx

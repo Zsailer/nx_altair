@@ -33,7 +33,7 @@ def to_pandas_edges(G, pos, **kwargs):
     """Convert Graph edgse to pandas DataFrame that's readable to Altair.
     """
     # Get all attributes in nodes
-    attributes = ['source', 'target', 'x', 'y', 'edge']
+    attributes = ['source', 'target', 'x', 'y', 'edge', 'pair']
     for e in G.edges():
         attributes += list(G.edges[e].keys())
     attributes = list(set(attributes))
@@ -54,16 +54,20 @@ def to_pandas_edges(G, pos, **kwargs):
             edge=i,
             source=e[0],
             target=e[1],
+            pair=e,
             x=pos[e[0]][0],
             y=pos[e[0]][1],
+            **G.edges[e]
         )
 
         data2 = dict(
             edge=i,
             source=e[0],
             target=e[1],
+            pair=e,
             x=pos[e[1]][0],
             y=pos[e[1]][1],
+            **G.edges[e]
         )
 
         df.loc[idx] = data1
