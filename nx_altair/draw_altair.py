@@ -42,7 +42,7 @@ def draw_networkx_edges(
 
     edge_cmap : Matplotlib colormap
        Colormap for mapping intensities of edges (default=None)
-       
+
     Returns
     -------
     viz: ``altair.Chart`` object
@@ -202,9 +202,9 @@ def draw_networkx_nodes(
 
     ###### node_color
     if not isinstance(node_color, str):
-        raise Exception("node_color must be a string.")
+       raise Exception("node_color must be a string.")
 
-    elif node_color in df_nodes.columns:
+    if node_color in df_nodes.columns:
         encoded_attrs["fill"] = node_color
 
     else:
