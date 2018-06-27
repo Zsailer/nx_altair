@@ -5,13 +5,18 @@ from .core import to_pandas_edges, to_pandas_nodes
 from ._utils import is_arraylike
 
 def draw_networkx_edges(
-    G,
-    pos,
+    G=None,
+    pos=None,
+    chart=None,
+    layer=None,
     edgelist=None,
     width=1,
     alpha=1.0,
     edge_color='black',
-    edge_cmap=None):
+    edge_cmap=None,
+    tooltip=[],
+    legend=False,
+    **kwargs):
     """Draw the edges of the graph G.
 
     This draws only the edges of the graph G.
@@ -24,6 +29,8 @@ def draw_networkx_edges(
     pos : dictionary
        A dictionary with nodes as keys and positions as values.
        Positions should be sequences of length 2.
+
+    chart:
 
     edgelist : collection of edge tuples
        Draw only specified edges(default=G.edges())
@@ -47,9 +54,15 @@ def draw_networkx_edges(
     -------
     viz: ``altair.Chart`` object
     """
+    if chart is None:
+        # Pandas dataframe of edges
+        df_edges = to_pandas_edges(G, pos)
 
-    # Pandas dataframe of edges
-    df_edges = to_pandas_edges(G, pos)
+        # Build a chart
+        edge_chart = alt.Chart(df_edges)
+    else:
+        df_edges = chart.layer[0].data
+        edge_chart = chart.layer[0]
 
     marker_attrs = {}
     encoded_attrs = {}
@@ -99,7 +112,7 @@ def draw_networkx_edges(
     if isinstance(edge_cmap, str):
         encoded_attrs["color"] = alt.Color(
             edge_color,
-            scale=alt.Scale(scheme=edge_cmap))
+            scale=alt.Scale(scheme=edge_cmap, legend=None))
 
     elif edge_cmap is not None:
         raise Exception("edge_cmap must be a string (colormap name) or None.")
@@ -107,27 +120,32 @@ def draw_networkx_edges(
 
     # ---------- Construct visualization ------------
 
-
     # Draw edges
-    viz  = alt.Chart(df_edges).mark_line(
-        **marker_attrs
-    ).encode(
+    edge_chart = edge_chart.mark_line(**marker_attrs).encode(
         alt.X('x', axis=alt.Axis(title='')),
         alt.Y('y', axis=alt.Axis(title='')),
         detail='edge',
+        tooltip=tooltip,
         **encoded_attrs
     )
 
-    return viz
+    if chart is not None:
+        chart.layer[0] = edge_chart
+
+    return edge_chart
 
 def draw_networkx_nodes(
-    G,
-    pos,
+    G=None,
+    pos=None,
+    chart=None,
+    layer=None,
     nodelist=None,
     node_size=300,
     node_color='red',
     alpha=1,
     cmap=None,
+    tooltip=[],
+    **kwargs
     ):
     """Draw the nodes of the graph G.
 
@@ -173,8 +191,21 @@ def draw_networkx_nodes(
     -------
     viz: ``altair.Chart`` object
     """
-    # Pandas dataframe of nodes
-    df_nodes = to_pandas_nodes(G, pos)
+    if layer is not None:
+        node_chart = layer
+
+    elif chart is not None:
+
+        df_nodes = chart.layer[1].data
+        node_chart = chart.layer[1]
+
+    else:
+        # Pandas dataframe of edges
+        df_nodes = to_pandas_edges(G, pos)
+
+        # Build a chart
+        node_chart = alt.Chart(df_nodes)
+
 
     marker_attrs = {}
     encoded_attrs = {}
@@ -232,19 +263,24 @@ def draw_networkx_nodes(
 
     # ---------- Construct visualization ------------
 
-    viz = alt.Chart(df_nodes).mark_point(
+    node_chart = node_chart.mark_point(
         **marker_attrs
     ).encode(
         x='x',
         y='y',
+        tooltip=tooltip,
         **encoded_attrs
     )
 
-    return viz
+    if chart is not None:
+        chart.layer[1] = node_chart
+
+    return node_chart
 
 def draw_networkx(
-    G,
+    G=None,
     pos=None,
+    chart=None,
     nodelist=None,
     edgelist=None,
     node_size=300,
