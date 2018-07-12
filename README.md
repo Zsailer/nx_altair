@@ -6,11 +6,15 @@
 
 **nx_altair** offers a similar **draw** API to NetworkX but returns Altair Charts instead.
 
+<img src="docs/_img/interactivity.gif">
+
 If you'd like to contribute, join the [Gitter chatroom](https://gitter.im/nx_altair/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link) and share your ideas! Also, checkout the [to-do list](#todo-list) below.
 
 ## Examples
 
-If you'd like to start playing with nx_altair, download [this notebook](examples/nx_altair-tutorial.ipynb)! 
+If you'd like to start playing with nx_altair, download [this notebook](examples/nx_altair-tutorial.ipynb)!
+
+
 
 ### Default graph
 
