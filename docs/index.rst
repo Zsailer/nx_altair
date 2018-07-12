@@ -6,10 +6,9 @@
 nx_altair
 =========
 
-
 .. altair-plot::
   :hide-code:
-  
+
   import networkx as nx
   import altair as alt
   import nx_altair as nxa

@@ -37,10 +37,13 @@ release = ''
 # ones.
 extensions = [
     'altair.sphinxext.altairplot',
+    #'altair.sphinxext.altairgallery',
     'sphinx.ext.mathjax',
 ]
 
 altair_plot_links = {'editor': True, 'source': False, 'export': False}
+
+altair_gallery_dir = '_gallery'
 
 # For the altairplot extension
 altairplot_links = {'editor': True, 'source': True, 'export': True}

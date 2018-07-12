@@ -78,7 +78,7 @@ def to_pandas_edges(G, pos, **kwargs):
 
 
 def to_chart(G, pos):
-    """Construct a single Altair Chat for
+    """Construct a single Altair Chart for
     """
     # Build node layer
     node_df = to_pandas_nodes(G, pos)

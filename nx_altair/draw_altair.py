@@ -14,7 +14,7 @@ def draw_networkx_edges(
     alpha=1.0,
     edge_color='black',
     edge_cmap=None,
-    tooltip=[],
+    tooltip=None,
     legend=False,
     **kwargs):
     """Draw the edges of the graph G.
@@ -117,6 +117,8 @@ def draw_networkx_edges(
     elif edge_cmap is not None:
         raise Exception("edge_cmap must be a string (colormap name) or None.")
 
+    if tooltip is not None:
+        encoded_attrs['tooltip'] = tooltip
 
     # ---------- Construct visualization ------------
 
@@ -125,7 +127,6 @@ def draw_networkx_edges(
         alt.X('x', axis=alt.Axis(title='')),
         alt.Y('y', axis=alt.Axis(title='')),
         detail='edge',
-        tooltip=tooltip,
         **encoded_attrs
     )
 
@@ -144,7 +145,7 @@ def draw_networkx_nodes(
     node_color='red',
     alpha=1,
     cmap=None,
-    tooltip=[],
+    tooltip=None,
     **kwargs
     ):
     """Draw the nodes of the graph G.
@@ -201,7 +202,7 @@ def draw_networkx_nodes(
 
     else:
         # Pandas dataframe of edges
-        df_nodes = to_pandas_edges(G, pos)
+        df_nodes = to_pandas_nodes(G, pos)
 
         # Build a chart
         node_chart = alt.Chart(df_nodes)
@@ -260,6 +261,9 @@ def draw_networkx_nodes(
     elif cmap is not None:
         raise Exception("cmap must be a string (colormap name) or None.")
 
+    if tooltip is not None:
+        encoded_attrs['tooltip'] = tooltip
+
 
     # ---------- Construct visualization ------------
 
@@ -268,7 +272,6 @@ def draw_networkx_nodes(
     ).encode(
         x='x',
         y='y',
-        tooltip=tooltip,
         **encoded_attrs
     )
 
@@ -289,6 +292,8 @@ def draw_networkx(
     cmap=None,
     width=1,
     edge_color='black',
+    node_tooltip=None,
+    edge_tooltip=None,
     edge_cmap=None):
     """Draw the graph G using Altair.
 
@@ -335,7 +340,9 @@ def draw_networkx(
         alpha=alpha,
         width=width,
         edge_color=edge_color,
-        edge_cmap=edge_cmap)
+        edge_cmap=edge_cmap,
+        tooltip=edge_tooltip,
+        )
 
     # Draw nodes
     nodes = draw_networkx_nodes(
@@ -345,7 +352,9 @@ def draw_networkx(
         node_size=node_size,
         node_color=node_color,
         alpha=alpha,
-        cmap=cmap)
+        cmap=cmap,
+        tooltip=node_tooltip,
+    )
 
     # Layer the chart
     viz = edges + nodes
