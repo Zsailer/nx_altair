@@ -14,3 +14,14 @@ def is_arraylike(obj):
     elif isinstance(obj, pd.DataFrame):
         return True
     return False
+
+
+def despine(chart):
+    """Despine altair chart.
+    """
+    chart = chart.configure_axis(
+        ticks=False,
+        grid=False,
+        domain=False,
+        labels=False)
+    return chart

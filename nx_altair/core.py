@@ -1,6 +1,7 @@
 import pandas as pd
 import networkx as nx
-
+import altair as alt
+from ._utils import despine
 
 def to_pandas_nodes(G, pos):
     """Convert Graph nodes to pandas DataFrame that's readable to Altair.
@@ -30,7 +31,7 @@ def to_pandas_nodes(G, pos):
 
 
 def to_pandas_edges(G, pos, **kwargs):
-    """Convert Graph edgse to pandas DataFrame that's readable to Altair.
+    """Convert Graph edges to pandas DataFrame that's readable to Altair.
     """
     # Get all attributes in nodes
     attributes = ['source', 'target', 'x', 'y', 'edge', 'pair']
@@ -39,7 +40,7 @@ def to_pandas_edges(G, pos, **kwargs):
     attributes = list(set(attributes))
 
 
-    # Build a dataframe for all nodes and their attributes
+    # Build a dataframe for all edges and their attributes
     df = pd.DataFrame(
         index=range(G.size()*2),
         columns=attributes
@@ -74,3 +75,22 @@ def to_pandas_edges(G, pos, **kwargs):
         df.loc[idx+1] = data2
 
     return df
+
+
+def to_chart(G, pos):
+    """Construct a single Altair Chart for
+    """
+    # Build node layer
+    node_df = to_pandas_nodes(G, pos)
+    node_layer = alt.Chart(node_df)
+
+    # Build edge layer
+    edge_df = to_pandas_edges(G, pos)
+    edge_layer = alt.Chart(edge_df)
+
+    # Layer chart
+    chart = alt.LayerChart(
+        layer=(edge_layer, node_layer)
+    )
+    chart = despine(chart)
+    return chart

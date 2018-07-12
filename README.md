@@ -10,6 +10,8 @@ If you'd like to contribute, join the [Gitter chatroom](https://gitter.im/nx_alt
 
 ## Examples
 
+If you'd like to start playing with nx_altair, download [this notebook](examples/nx_altair-tutorial.ipynb)! 
+
 ### Default graph
 
 ```python
