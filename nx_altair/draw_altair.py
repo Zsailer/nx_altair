@@ -93,7 +93,7 @@ def draw_networkx_edges(
         raise Exception("edge_color must be a string.")
 
     elif edge_color in df_edges.columns:
-        encoded_attrs["color"] = edge_color
+        encoded_attrs["color"] = alt.Color(edge_color, legend=None)
 
     else:
         marker_attrs["color"] = edge_color
@@ -112,7 +112,8 @@ def draw_networkx_edges(
     if isinstance(edge_cmap, str):
         encoded_attrs["color"] = alt.Color(
             edge_color,
-            scale=alt.Scale(scheme=edge_cmap, legend=None))
+            scale=alt.Scale(scheme=edge_cmap, legend=None),
+            legend=None)
 
     elif edge_cmap is not None:
         raise Exception("edge_cmap must be a string (colormap name) or None.")
@@ -224,7 +225,7 @@ def draw_networkx_nodes(
 
     ###### Node size
     if isinstance(node_size, str):
-        encoded_attrs["size"] = node_size
+        encoded_attrs["size"] = alt.Size(node_size, legend=None)
 
     elif isinstance(node_size, int):
         marker_attrs["size"] = node_size
