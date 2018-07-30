@@ -2,7 +2,6 @@ import pandas as pd
 import networkx as nx
 import altair as alt
 from ._utils import despine
-from math import sin, cos, atan2
 
 def to_pandas_nodes(G, pos):
     """Convert Graph nodes to pandas DataFrame that's readable to Altair.
