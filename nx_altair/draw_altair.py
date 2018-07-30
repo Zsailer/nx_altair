@@ -1,7 +1,8 @@
 import numpy as np
 import altair as alt
+import networkx as nx
 
-from .core import to_pandas_edges, to_pandas_nodes
+from .core import to_pandas_edges, to_pandas_edges_arrows, to_pandas_nodes
 from ._utils import is_arraylike
 
 def draw_networkx_edges(
@@ -135,6 +136,149 @@ def draw_networkx_edges(
         chart.layer[0] = edge_chart
 
     return edge_chart
+
+
+def draw_networkx_arrows(
+    G=None,
+    pos=None,
+    chart=None,
+    layer=None,
+    edgelist=None,
+    arrow_height=1,
+    arrow_width=2,
+    width=1,
+    alpha=1.0,
+    edge_color='black',
+    edge_cmap=None,
+    tooltip=None,
+    legend=False,
+    **kwargs):
+    """Draw the edges of the graph G.
+
+    This draws only the edges of the graph G.
+
+    Parameters
+    ----------
+    G : graph
+       A networkx graph
+
+    pos : dictionary
+       A dictionary with nodes as keys and positions as values.
+       Positions should be sequences of length 2.
+
+    chart:
+
+    edgelist : collection of edge tuples
+       Draw only specified edges(default=G.edges())
+
+    width : float, or array of floats
+       Line width of edges (default=1.0)
+
+    edge_color : color string, or array of floats
+       Edge color. Can be a single color format string (default='r'),
+       or a sequence of colors with the same length as edgelist.
+       If numeric values are specified they will be mapped to
+       colors using the edge_cmap and edge_vmin,edge_vmax parameters.
+
+    alpha : float
+       The edge transparency (default=1.0)
+
+    edge_cmap : Matplotlib colormap
+       Colormap for mapping intensities of edges (default=None)
+
+    Returns
+    -------
+    viz: ``altair.Chart`` object
+    """
+    if chart is None:
+        # Pandas dataframe of edges
+        df_edge_arrows = to_pandas_edges_arrows(G, pos, arrow_width)
+
+        # Build a chart
+        edge_chart = alt.Chart(df_edge_arrows)
+    else:
+        df_edge_arrows = chart.layer[0].data
+        edge_chart = chart.layer[0]
+
+    marker_attrs = {}
+    encoded_attrs = {}
+
+    # ---------- Handle arguments ------------
+
+    ###### node list argument
+    if isinstance(edgelist, list):
+        # Subset dataframe.
+        df_edge_arrows = df_edge_arrows.loc[df['pair'].isin(edgelist)]
+
+    elif edgelist is not None:
+        raise Exception("nodelist must be a list or None.")
+
+
+    ###### Node size
+    if isinstance(width, str):
+        encoded_attrs["size"] = alt.Size(width, legend=None)
+
+    elif isinstance(width, float) or isinstance(width, int):
+        marker_attrs["strokeWidth"] = width
+
+    else:
+        raise Exception("width must be a string or int.")
+
+    ###### node_color
+    if not isinstance(edge_color, str):
+        raise Exception("edge_color must be a string.")
+
+    elif edge_color in df_edge_arrows.columns:
+        encoded_attrs["color"] = alt.Color(edge_color, legend=None)
+
+    else:
+        marker_attrs["color"] = edge_color
+
+    ##### alpha
+    if isinstance(alpha, str):
+        encoded_attrs["opacity"] = alpha
+
+    elif isinstance(alpha, int) or isinstance(alpha, float):
+        marker_attrs["opacity"] = alpha
+
+    elif alpha is not None:
+        raise Exception("alpha must be a string or None.")
+
+    ##### alpha
+    if isinstance(edge_cmap, str):
+        encoded_attrs["color"] = alt.Color(
+            edge_color,
+            scale=alt.Scale(scheme=edge_cmap, legend=None),
+            legend=None)
+
+    elif edge_cmap is not None:
+        raise Exception("edge_cmap must be a string (colormap name) or None.")
+
+    if tooltip is not None:
+        encoded_attrs['tooltip'] = tooltip
+
+    # ---------- Construct visualization ------------
+
+    # Draw edges
+    edge_chart = edge_chart.mark_rect(
+            baseline='middle',
+            height=arrow_height,
+            width=arrow_width,
+            **marker_attrs
+    ).encode(
+        x='x',
+        y='y',
+        angle='angle',
+        dx='dx',
+        dy='dy',
+        **encoded_attrs
+    )
+
+    if chart is not None:
+        chart.layer[0] = edge_chart
+
+    return edge_chart
+
 
 def draw_networkx_nodes(
     G=None,
@@ -345,6 +489,19 @@ def draw_networkx(
         tooltip=edge_tooltip,
         )
 
+    if isinstance(G, nx.DiGraph):
+        # Draw edges
+        arrows = draw_networkx_arrows(
+            G,
+            pos,
+            edgelist=edgelist,
+            alpha=alpha,
+            width=width,
+            edge_color=edge_color,
+            edge_cmap=edge_cmap,
+            tooltip=edge_tooltip,
+            )
+
     # Draw nodes
     nodes = draw_networkx_nodes(
         G,
@@ -358,7 +515,10 @@ def draw_networkx(
     )
 
     # Layer the chart
-    viz = edges + nodes
+    if isinstance(G, nx.DiGraph):
+        viz = edges + nodes + arrows
+    else:
+        viz = edges + nodes
 
     # Remove ticks, axis, labels, etc.
     viz = viz.configure_axis(

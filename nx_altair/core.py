@@ -2,6 +2,7 @@ import pandas as pd
 import networkx as nx
 import altair as alt
 from ._utils import despine
+from math import atan2
 
 def to_pandas_nodes(G, pos):
     """Convert Graph nodes to pandas DataFrame that's readable to Altair.
@@ -73,6 +74,45 @@ def to_pandas_edges(G, pos, **kwargs):
 
         df.loc[idx] = data1
         df.loc[idx+1] = data2
+
+    return df
+
+def to_pandas_edges_arrows(G, pos, arrow_width, **kwargs):
+    """Convert Graph edges to pandas DataFrame that's readable to Altair.
+    """
+    # Get all attributes in nodes
+    attributes = ['source', 'target', 'x', 'y', 'edge', 'pair']
+    for e in G.edges():
+        attributes += list(G.edges[e].keys())
+    attributes = list(set(attributes))
+
+
+    # Build a dataframe for all edges and their attributes
+    df = pd.DataFrame(
+        index=range(G.size()),
+        columns=attributes
+    )
+
+
+    # Add node data to dataframe.
+    for i, e in enumerate(G.edges):
+        idx = i
+        Dy = pos[e[0]][1]-pos[e[0]][0]
+        Dx = pos[e[1]][1]-pos[e[1]][0]
+        data1 = dict(
+            edge=i,
+            source=e[0],
+            target=e[1],
+            pair=e,
+            x=pos[e[1]][0],
+            y=pos[e[1]][1],
+            angle=atan2(Dy, Dx),
+            dy=arrow_width/2*sin(angle),
+            dx=arrow_width/2*cos(angle)
+            **G.edges[e]
+        )
+
+        df.loc[idx] = data1
 
     return df
 
