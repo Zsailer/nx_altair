@@ -290,7 +290,6 @@ def draw_networkx_nodes_labels(
     node_label_size=15,
     node_label_color='black',
     node_label='label',
-    node_label_baseline='middle',
     **kwargs
     ):
     """Draw the nodes of the graph G.
@@ -309,29 +308,19 @@ def draw_networkx_nodes_labels(
     nodelist : list, optional
        Draw only specified nodes (default G.nodes())
 
-    node_size : scalar or string
-       Size of nodes (default=300).  If an array is specified it must be the
+    node_label_size : scalar or string
+       Size of nodes (default=15).  If an array is specified it must be the
        same length as nodelist.
 
-    node_color : color string, or array of floats
+    node_label_color : color string, or array of floats
        Node color. Can be a single color format string (default='r'),
        or a  sequence of colors with the same length as nodelist.
        If numeric values are specified they will be mapped to
        colors using the cmap and vmin,vmax parameters.  See
        matplotlib.scatter for more details.
 
-    node_shape :  string
-       The shape of the node.  Specification is as matplotlib.scatter
-       marker, one of 'so^>v<dph8' (default='o').
-
-    alpha : float or array of floats
-       The node transparency.  This can be a single alpha value (default=1.0),
-       in which case it will be applied to all the nodes of color. Otherwise,
-       if it is an array, the elements of alpha will be applied to the colors
-       in order (cycling through alpha multiple times if necessary).
-
-    cmap : Matplotlib colormap
-       Colormap for mapping intensities of nodes (default=None)
+    node_label : string
+       The name of the node attribute to treat as a label.
 
     Returns
     -------
@@ -353,7 +342,7 @@ def draw_networkx_nodes_labels(
         node_chart = alt.Chart(df_nodes)
 
 
-    marker_attrs = {'baseline': node_label_baseline}
+    marker_attrs = {}
     encoded_attrs = {}
 
     # ---------- Handle arguments ------------
@@ -377,10 +366,21 @@ def draw_networkx_nodes_labels(
     else:
         raise Exception("node_size must be a string or int.")
 
+    ###### node_color
+    if not isinstance(node_label_color, str):
+       raise Exception("node_color must be a string.")
+
+    if node_label_color in df_nodes.columns:
+        encoded_attrs["fill"] = node_label_color
+
+    else:
+        marker_attrs["fill"] = node_label_color
+
 
     # ---------- Construct visualization ------------
 
     node_chart = node_chart.mark_text(
+        baseline='middle',
         **marker_attrs
     ).encode(
         x='x',
@@ -405,7 +405,6 @@ def draw_networkx(
     node_label=None,
     node_label_color='black',
     node_label_size=15,
-    node_label_baseline='middle',
     alpha=1,
     cmap=None,
     width=1,
@@ -431,6 +430,20 @@ def draw_networkx(
        If numeric values are specified they will be mapped to
        colors using the cmap and vmin,vmax parameters.  See
        matplotlib.scatter for more details.
+
+    node_label_size : scalar or string
+       Size of nodes (default=15).  If an array is specified it must be the
+       same length as nodelist.
+
+    node_label_color : color string, or array of floats
+       Node color. Can be a single color format string (default='r'),
+       or a  sequence of colors with the same length as nodelist.
+       If numeric values are specified they will be mapped to
+       colors using the cmap and vmin,vmax parameters.  See
+       matplotlib.scatter for more details.
+
+    node_label : string
+       The name of the node attribute to treat as a label.
 
     alpha : float, optional (default=1.0)
        The node and edge transparency
@@ -482,8 +495,7 @@ def draw_networkx(
             nodelist=nodelist,
             node_label_size=node_label_size,
             node_label_color=node_label_color,
-            node_label=node_label,
-            node_label_baseline=node_label_baseline
+            node_label=node_label
         )
 
     # Layer the chart
