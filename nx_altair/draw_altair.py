@@ -73,7 +73,7 @@ def draw_networkx_edges(
     ###### node list argument
     if isinstance(edgelist, list):
         # Subset dataframe.
-        df_edges = df_edges.loc[df['pair'].isin(edgelist)]
+        df_edges = df_edges.loc[df_edges['pair'].isin(edgelist)]
 
     elif edgelist is not None:
         raise Exception("nodelist must be a list or None.")
@@ -144,9 +144,8 @@ def draw_networkx_arrows(
     chart=None,
     layer=None,
     edgelist=None,
-    arrow_height=1,
     arrow_width=2,
-    width=1,
+    arrow_length=.25,
     alpha=1.0,
     edge_color='black',
     edge_cmap=None,
@@ -171,8 +170,11 @@ def draw_networkx_arrows(
     edgelist : collection of edge tuples
        Draw only specified edges(default=G.edges())
 
-    width : float, or array of floats
-       Line width of edges (default=1.0)
+    arrow_width : float, optional (default=2.0)
+       The width of arrow portions of edges.
+
+    arrow_length : float, optional (default=.25)
+       The perportion of the line to be occupied by the arrow.
 
     edge_color : color string, or array of floats
        Edge color. Can be a single color format string (default='r'),
@@ -192,7 +194,7 @@ def draw_networkx_arrows(
     """
     if chart is None:
         # Pandas dataframe of edges
-        df_edge_arrows = to_pandas_edges_arrows(G, pos, arrow_width)
+        df_edge_arrows = to_pandas_edges_arrows(G, pos, arrow_length)
 
         # Build a chart
         edge_chart = alt.Chart(df_edge_arrows)
@@ -208,21 +210,21 @@ def draw_networkx_arrows(
     ###### node list argument
     if isinstance(edgelist, list):
         # Subset dataframe.
-        df_edge_arrows = df_edge_arrows.loc[df['pair'].isin(edgelist)]
+        df_edge_arrows = df_edge_arrows.loc[df_edge_arrows['pair'].isin(edgelist)]
 
     elif edgelist is not None:
         raise Exception("nodelist must be a list or None.")
 
 
     ###### Node size
-    if isinstance(width, str):
-        encoded_attrs["size"] = alt.Size(width, legend=None)
+    if isinstance(arrow_width, str):
+        encoded_attrs["size"] = alt.Size(arrow_width, legend=None)
 
-    elif isinstance(width, float) or isinstance(width, int):
-        marker_attrs["strokeWidth"] = width
+    elif isinstance(arrow_width, float) or isinstance(arrow_width, int):
+        marker_attrs["strokeWidth"] = arrow_width
 
     else:
-        raise Exception("width must be a string or int.")
+        raise Exception("arrow_width must be a string or int.")
 
     ###### node_color
     if not isinstance(edge_color, str):
@@ -260,17 +262,12 @@ def draw_networkx_arrows(
     # ---------- Construct visualization ------------
 
     # Draw edges
-    edge_chart = edge_chart.mark_rect(
-            baseline='middle',
-            height=arrow_height,
-            width=arrow_width,
-            **marker_attrs
+    edge_chart = edge_chart.mark_line(
+        **marker_attrs
     ).encode(
         x='x',
         y='y',
-        angle='angle',
-        dx='dx',
-        dy='dy',
+        detail='edge',
         **encoded_attrs
     )
 
@@ -436,6 +433,8 @@ def draw_networkx(
     alpha=1,
     cmap=None,
     width=1,
+    arrow_width=2,
+    arrow_length=.25,
     edge_color='black',
     node_tooltip=None,
     edge_tooltip=None,
@@ -468,6 +467,12 @@ def draw_networkx(
     width : float, optional (default=1.0)
        Line width of edges
 
+    arrow_width : float, optional (default=2.0)
+       The width of arrow portions of edges.
+
+    arrow_length : float, optional (default=.25)
+       The perportion of the line to be occupied by the arrow.
+
     edge_color : color string, or array of floats (default='r')
        Edge color. Can be a single color format string,
        or a sequence of colors with the same length as edgelist.
@@ -496,7 +501,8 @@ def draw_networkx(
             pos,
             edgelist=edgelist,
             alpha=alpha,
-            width=width,
+            arrow_width=arrow_width,
+            arrow_length=arrow_length,
             edge_color=edge_color,
             edge_cmap=edge_cmap,
             tooltip=edge_tooltip,
