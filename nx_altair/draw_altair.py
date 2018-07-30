@@ -253,7 +253,7 @@ def draw_networkx_nodes(
     elif alpha is not None:
         raise Exception("alpha must be a string or None.")
 
-    ##### alpha
+    ##### cmap
     if isinstance(cmap, str):
         encoded_attrs["fill"] = alt.Color(
             node_color,
@@ -281,6 +281,119 @@ def draw_networkx_nodes(
 
     return node_chart
 
+def draw_networkx_nodes_labels(
+    G=None,
+    pos=None,
+    chart=None,
+    layer=None,
+    nodelist=None,
+    node_label_size=15,
+    node_label_color='black',
+    node_label='label',
+    node_label_baseline='middle',
+    **kwargs
+    ):
+    """Draw the nodes of the graph G.
+
+    This draws only the nodes of the graph G.
+
+    Parameters
+    ----------
+    G : graph
+       A networkx graph
+
+    pos : dictionary
+       A dictionary with nodes as keys and positions as values.
+       Positions should be sequences of length 2.
+
+    nodelist : list, optional
+       Draw only specified nodes (default G.nodes())
+
+    node_size : scalar or string
+       Size of nodes (default=300).  If an array is specified it must be the
+       same length as nodelist.
+
+    node_color : color string, or array of floats
+       Node color. Can be a single color format string (default='r'),
+       or a  sequence of colors with the same length as nodelist.
+       If numeric values are specified they will be mapped to
+       colors using the cmap and vmin,vmax parameters.  See
+       matplotlib.scatter for more details.
+
+    node_shape :  string
+       The shape of the node.  Specification is as matplotlib.scatter
+       marker, one of 'so^>v<dph8' (default='o').
+
+    alpha : float or array of floats
+       The node transparency.  This can be a single alpha value (default=1.0),
+       in which case it will be applied to all the nodes of color. Otherwise,
+       if it is an array, the elements of alpha will be applied to the colors
+       in order (cycling through alpha multiple times if necessary).
+
+    cmap : Matplotlib colormap
+       Colormap for mapping intensities of nodes (default=None)
+
+    Returns
+    -------
+    viz: ``altair.Chart`` object
+    """
+    if layer is not None:
+        node_chart = layer
+
+    elif chart is not None:
+
+        df_nodes = chart.layer[1].data
+        node_chart = chart.layer[1]
+
+    else:
+        # Pandas dataframe of edges
+        df_nodes = to_pandas_nodes(G, pos)
+
+        # Build a chart
+        node_chart = alt.Chart(df_nodes)
+
+
+    marker_attrs = {'baseline': node_label_baseline}
+    encoded_attrs = {}
+
+    # ---------- Handle arguments ------------
+
+    ###### node list argument
+    if isinstance(nodelist, list):
+        # Subset dataframe.
+        df_nodes = df_nodes.loc[nodelist]
+
+    elif nodelist is not None:
+        raise Exception("nodelist must be a list or None.")
+
+
+    ###### Node size
+    if isinstance(node_label_size, str):
+        encoded_attrs["size"] = alt.Size(node_label_size, legend=None)
+
+    elif isinstance(node_label_size, int):
+        marker_attrs["size"] = node_label_size
+
+    else:
+        raise Exception("node_size must be a string or int.")
+
+
+    # ---------- Construct visualization ------------
+
+    node_chart = node_chart.mark_text(
+        **marker_attrs
+    ).encode(
+        x='x',
+        y='y',
+        text=node_label,
+        **encoded_attrs
+    )
+
+    if chart is not None:
+        chart.layer[1] = node_chart
+
+    return node_chart
+
 def draw_networkx(
     G=None,
     pos=None,
@@ -289,6 +402,10 @@ def draw_networkx(
     edgelist=None,
     node_size=300,
     node_color='red',
+    node_label=None,
+    node_label_color='black',
+    node_label_size=15,
+    node_label_baseline='middle',
     alpha=1,
     cmap=None,
     width=1,
@@ -357,8 +474,23 @@ def draw_networkx(
         tooltip=node_tooltip,
     )
 
+    # Draw node labels:
+    if node_label:
+        node_labels = draw_networkx_nodes_labels(
+            G,
+            pos,
+            nodelist=nodelist,
+            node_label_size=node_label_size,
+            node_label_color=node_label_color,
+            node_label=node_label,
+            node_label_baseline=node_label_baseline
+        )
+
     # Layer the chart
-    viz = edges + nodes
+    if node_label:
+        viz = edges + nodes + node_labels
+    else:
+        viz = edges + nodes
 
     # Remove ticks, axis, labels, etc.
     viz = viz.configure_axis(
