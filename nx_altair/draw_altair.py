@@ -145,7 +145,7 @@ def draw_networkx_arrows(
     layer=None,
     edgelist=None,
     arrow_width=2,
-    arrow_length=.25,
+    arrow_length=.1,
     alpha=1.0,
     edge_color='black',
     edge_cmap=None,
@@ -173,7 +173,7 @@ def draw_networkx_arrows(
     arrow_width : float, optional (default=2.0)
        The width of arrow portions of edges.
 
-    arrow_length : float, optional (default=.25)
+    arrow_length : float, optional (default=.1)
        The perportion of the line to be occupied by the arrow.
 
     edge_color : color string, or array of floats
@@ -550,8 +550,9 @@ def draw_networkx(
     cmap=None,
     width=1,
     arrow_width=2,
-    arrow_length=.25,
+    arrow_length=.1,
     edge_color='black',
+    arrow_color='black',
     node_tooltip=None,
     edge_tooltip=None,
     edge_cmap=None):
@@ -600,11 +601,17 @@ def draw_networkx(
     arrow_width : float, optional (default=2.0)
        The width of arrow portions of edges.
 
-    arrow_length : float, optional (default=.25)
+    arrow_length : float, optional (default=.1)
        The perportion of the line to be occupied by the arrow.
 
     edge_color : color string, or array of floats (default='r')
        Edge color. Can be a single color format string,
+       or a sequence of colors with the same length as edgelist.
+       If numeric values are specified they will be mapped to
+       colors using the edge_cmap and edge_vmin,edge_vmax parameters.
+    
+    arrow_color : color string, or array of floats (default='r')
+       Arrow color. Can be a single color format string,
        or a sequence of colors with the same length as edgelist.
        If numeric values are specified they will be mapped to
        colors using the edge_cmap and edge_vmin,edge_vmax parameters.
@@ -633,7 +640,7 @@ def draw_networkx(
             alpha=alpha,
             arrow_width=arrow_width,
             arrow_length=arrow_length,
-            edge_color=edge_color,
+            edge_color=arrow_color,
             edge_cmap=edge_cmap,
             tooltip=edge_tooltip,
             )
@@ -662,11 +669,12 @@ def draw_networkx(
         )
 
     # Layer the chart
-    viz = edges + nodes
-    if node_label:
-        viz = viz + node_labels
+    viz = edges
     if isinstance(G, nx.DiGraph):
-        viz = viz + arrows
+        viz += arrows
+    viz += nodes
+    if node_label:
+        viz += node_labels
 
     # Remove ticks, axis, labels, etc.
     viz = viz.configure_axis(
