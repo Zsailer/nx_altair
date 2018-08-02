@@ -609,7 +609,7 @@ def draw_networkx(
        or a sequence of colors with the same length as edgelist.
        If numeric values are specified they will be mapped to
        colors using the edge_cmap and edge_vmin,edge_vmax parameters.
-    
+
     arrow_color : color string, or array of floats (default='r')
        Arrow color. Can be a single color format string,
        or a sequence of colors with the same length as edgelist.
@@ -620,61 +620,72 @@ def draw_networkx(
        Colormap for mapping intensities of edges
     """
     # Draw edges
-    edges = draw_networkx_edges(
-        G,
-        pos,
-        edgelist=edgelist,
-        alpha=alpha,
-        width=width,
-        edge_color=edge_color,
-        edge_cmap=edge_cmap,
-        tooltip=edge_tooltip,
-        )
-
-    if isinstance(G, nx.DiGraph):
-        # Draw edges
-        arrows = draw_networkx_arrows(
+    if len(G.edges())>0:
+        edges = draw_networkx_edges(
             G,
             pos,
             edgelist=edgelist,
             alpha=alpha,
-            arrow_width=arrow_width,
-            arrow_length=arrow_length,
-            edge_color=arrow_color,
+            width=width,
+            edge_color=edge_color,
             edge_cmap=edge_cmap,
             tooltip=edge_tooltip,
             )
 
-    # Draw nodes
-    nodes = draw_networkx_nodes(
-        G,
-        pos,
-        nodelist=nodelist,
-        node_size=node_size,
-        node_color=node_color,
-        alpha=alpha,
-        cmap=cmap,
-        tooltip=node_tooltip,
-    )
+        if isinstance(G, nx.DiGraph):
+            # Draw edges
+            arrows = draw_networkx_arrows(
+                G,
+                pos,
+                edgelist=edgelist,
+                alpha=alpha,
+                arrow_width=arrow_width,
+                arrow_length=arrow_length,
+                edge_color=arrow_color,
+                edge_cmap=edge_cmap,
+                tooltip=edge_tooltip,
+                )
 
-    # Draw node labels:
-    if node_label:
-        node_labels = draw_networkx_nodes_labels(
+    # Draw nodes
+    if len(G.nodes())>0:
+        nodes = draw_networkx_nodes(
             G,
             pos,
             nodelist=nodelist,
-            node_label_size=node_label_size,
-            node_label_color=node_label_color,
-            node_label=node_label
+            node_size=node_size,
+            node_color=node_color,
+            alpha=alpha,
+            cmap=cmap,
+            tooltip=node_tooltip,
         )
 
+        # Draw node labels:
+        if node_label:
+            node_labels = draw_networkx_nodes_labels(
+                G,
+                pos,
+                nodelist=nodelist,
+                node_label_size=node_label_size,
+                node_label_color=node_label_color,
+                node_label=node_label
+            )
+
     # Layer the chart
-    viz = edges
-    if isinstance(G, nx.DiGraph):
-        viz += arrows
-    viz += nodes
-    if node_label:
-        viz += node_labels
+    viz = []
+    if len(G.edges()):
+        viz.append(edges)
+        if isinstance(G, nx.DiGraph):
+            viz.append(arrows)
+
+    if len(G.nodes()):
+        viz.append(nodes)
+        if node_label:
+            viz.append(node_labels)
+
+    if viz:
+        viz = alt.layer(*viz)
+    else:
+        raise ValueError("G does not contain any nodes or edges.")
 
     # Remove ticks, axis, labels, etc.
     viz = viz.configure_axis(
