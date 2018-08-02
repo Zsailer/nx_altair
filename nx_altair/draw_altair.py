@@ -422,14 +422,14 @@ def draw_networkx_nodes(
 
     return node_chart
 
-def draw_networkx_nodes_labels(
+def draw_networkx_labels(
     G=None,
     pos=None,
     chart=None,
     layer=None,
     nodelist=None,
-    node_label_size=15,
-    node_label_color='black',
+    font_size=15,
+    font_color='black',
     node_label='label',
     **kwargs
     ):
@@ -449,11 +449,11 @@ def draw_networkx_nodes_labels(
     nodelist : list, optional
        Draw only specified nodes (default G.nodes())
 
-    node_label_size : scalar or string
+    font_size : scalar or string
        Size of nodes (default=15).  If an array is specified it must be the
        same length as nodelist.
 
-    node_label_color : color string, or array of floats
+    font_color : color string, or array of floats
        Node color. Can be a single color format string (default='r'),
        or a  sequence of colors with the same length as nodelist.
        If numeric values are specified they will be mapped to
@@ -498,24 +498,24 @@ def draw_networkx_nodes_labels(
 
 
     ###### Node size
-    if isinstance(node_label_size, str):
-        encoded_attrs["size"] = alt.Size(node_label_size, legend=None)
+    if isinstance(font_size, str):
+        encoded_attrs["size"] = alt.Size(font_size, legend=None)
 
-    elif isinstance(node_label_size, int):
-        marker_attrs["size"] = node_label_size
+    elif isinstance(font_size, int):
+        marker_attrs["size"] = font_size
 
     else:
         raise Exception("node_size must be a string or int.")
 
     ###### node_color
-    if not isinstance(node_label_color, str):
+    if not isinstance(font_color, str):
        raise Exception("node_color must be a string.")
 
-    if node_label_color in df_nodes.columns:
-        encoded_attrs["fill"] = node_label_color
+    if font_color in df_nodes.columns:
+        encoded_attrs["fill"] = font_color
 
     else:
-        marker_attrs["fill"] = node_label_color
+        marker_attrs["fill"] = font_color
 
 
     # ---------- Construct visualization ------------
@@ -544,8 +544,8 @@ def draw_networkx(
     node_size=300,
     node_color='red',
     node_label=None,
-    node_label_color='black',
-    node_label_size=15,
+    font_color='black',
+    font_size=15,
     alpha=1,
     cmap=None,
     width=1,
@@ -575,11 +575,11 @@ def draw_networkx(
        colors using the cmap and vmin,vmax parameters.  See
        matplotlib.scatter for more details.
 
-    node_label_size : scalar or string
+    font_size : scalar or string
        Size of nodes (default=15).  If an array is specified it must be the
        same length as nodelist.
 
-    node_label_color : color string, or array of floats
+    font_color : color string, or array of floats
        Node color. Can be a single color format string (default='r'),
        or a  sequence of colors with the same length as nodelist.
        If numeric values are specified they will be mapped to
@@ -661,12 +661,12 @@ def draw_networkx(
 
         # Draw node labels:
         if node_label:
-            node_labels = draw_networkx_nodes_labels(
+            labels = draw_networkx_labels(
                 G,
                 pos,
                 nodelist=nodelist,
-                node_label_size=node_label_size,
-                node_label_color=node_label_color,
+                font_size=font_size,
+                font_color=font_color,
                 node_label=node_label
             )
 
@@ -680,7 +680,7 @@ def draw_networkx(
     if len(G.nodes()):
         viz.append(nodes)
         if node_label:
-            viz.append(node_labels)
+            viz.append(labels)
 
     if viz:
         viz = alt.layer(*viz)
