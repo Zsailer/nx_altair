@@ -287,7 +287,7 @@ def draw_networkx_nodes_labels(
     chart=None,
     layer=None,
     nodelist=None,
-    node_label_size=15,
+    font_size=15,
     node_label_color='black',
     node_label='label',
     **kwargs
@@ -308,7 +308,7 @@ def draw_networkx_nodes_labels(
     nodelist : list, optional
        Draw only specified nodes (default G.nodes())
 
-    node_label_size : scalar or string
+    font_size : scalar or string
        Size of nodes (default=15).  If an array is specified it must be the
        same length as nodelist.
 
@@ -357,11 +357,11 @@ def draw_networkx_nodes_labels(
 
 
     ###### Node size
-    if isinstance(node_label_size, str):
-        encoded_attrs["size"] = alt.Size(node_label_size, legend=None)
+    if isinstance(font_size, str):
+        encoded_attrs["size"] = alt.Size(font_size, legend=None)
 
-    elif isinstance(node_label_size, int):
-        marker_attrs["size"] = node_label_size
+    elif isinstance(font_size, int):
+        marker_attrs["size"] = font_size
 
     else:
         raise Exception("node_size must be a string or int.")
@@ -404,7 +404,7 @@ def draw_networkx(
     node_color='red',
     node_label=None,
     node_label_color='black',
-    node_label_size=15,
+    font_size=15,
     alpha=1,
     cmap=None,
     width=1,
@@ -431,7 +431,7 @@ def draw_networkx(
        colors using the cmap and vmin,vmax parameters.  See
        matplotlib.scatter for more details.
 
-    node_label_size : scalar or string
+    font_size : scalar or string
        Size of nodes (default=15).  If an array is specified it must be the
        same length as nodelist.
 
@@ -493,7 +493,7 @@ def draw_networkx(
             G,
             pos,
             nodelist=nodelist,
-            node_label_size=node_label_size,
+            font_size=font_size,
             node_label_color=node_label_color,
             node_label=node_label
         )
