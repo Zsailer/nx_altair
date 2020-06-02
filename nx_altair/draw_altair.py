@@ -126,8 +126,8 @@ def draw_networkx_edges(
 
     # Draw edges
     edge_chart = edge_chart.mark_line(**marker_attrs).encode(
-        alt.X('x', axis=alt.Axis(title='')),
-        alt.Y('y', axis=alt.Axis(title='')),
+        x=alt.X('x', axis=alt.Axis(title='', grid=False, labels=False, ticks=False)),
+        y=alt.Y('y', axis=alt.Axis(title='', grid=False, labels=False, ticks=False)),
         detail='edge',
         **encoded_attrs
     )
@@ -265,8 +265,8 @@ def draw_networkx_arrows(
     edge_chart = edge_chart.mark_line(
         **marker_attrs
     ).encode(
-        x='x',
-        y='y',
+        x=alt.X('x', axis=alt.Axis(grid=False, labels=False, ticks=False)),
+        y=alt.Y('y', axis=alt.Axis(grid=False, labels=False, ticks=False)),
         detail='edge',
         **encoded_attrs
     )
@@ -285,6 +285,7 @@ def draw_networkx_nodes(
     nodelist=None,
     node_size=300,
     node_color='red',
+    linewidths=1.0,
     alpha=1,
     cmap=None,
     tooltip=None,
@@ -406,14 +407,14 @@ def draw_networkx_nodes(
     if tooltip is not None:
         encoded_attrs['tooltip'] = tooltip
 
-
+    marker_attrs['strokeWidth'] = linewidths
     # ---------- Construct visualization ------------
 
     node_chart = node_chart.mark_point(
         **marker_attrs
     ).encode(
-        x='x',
-        y='y',
+        x=alt.X('x', axis=alt.Axis(grid=False, labels=False, ticks=False)),
+        y=alt.Y('y', axis=alt.Axis(grid=False, labels=False, ticks=False)),
         **encoded_attrs
     )
 
@@ -524,8 +525,8 @@ def draw_networkx_labels(
         baseline='middle',
         **marker_attrs
     ).encode(
-        x='x',
-        y='y',
+        x=alt.X('x', axis=alt.Axis(grid=False, labels=False, ticks=False)),
+        y=alt.Y('y', axis=alt.Axis(grid=False, labels=False, ticks=False)),
         text=node_label,
         **encoded_attrs
     )
@@ -548,6 +549,7 @@ def draw_networkx(
     font_size=15,
     alpha=1,
     cmap=None,
+    linewidths=1.0,
     width=1,
     arrow_width=2,
     arrow_length=.1,
@@ -619,6 +621,9 @@ def draw_networkx(
     edge_cmap : Matplotlib colormap, optional (default=None)
        Colormap for mapping intensities of edges
     """
+    if not pos:
+        pos = nx.drawing.layout.spring_layout(G)
+
     # Draw edges
     if len(G.edges())>0:
         edges = draw_networkx_edges(
@@ -655,6 +660,7 @@ def draw_networkx(
             node_size=node_size,
             node_color=node_color,
             alpha=alpha,
+            linewidths=linewidths,
             cmap=cmap,
             tooltip=node_tooltip,
         )
@@ -669,6 +675,7 @@ def draw_networkx(
                 font_color=font_color,
                 node_label=node_label
             )
+
 
     # Layer the chart
     viz = []
@@ -687,11 +694,4 @@ def draw_networkx(
     else:
         raise ValueError("G does not contain any nodes or edges.")
 
-    # Remove ticks, axis, labels, etc.
-    viz = viz.configure_axis(
-        ticks=False,
-        grid=False,
-        domain=False,
-        labels=False,
-    )
     return viz

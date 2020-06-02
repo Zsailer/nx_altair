@@ -46,7 +46,6 @@ def to_pandas_edges(G, pos, **kwargs):
         columns=attributes
     )
 
-
     # Add node data to dataframe.
     for i, e in enumerate(G.edges):
         idx = i*2
