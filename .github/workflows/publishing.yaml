@@ -2,6 +2,8 @@ name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
 
 on:
   push:
+    branches:
+    - Zsailer/master
     paths:
     - '**__version__.py'
 
