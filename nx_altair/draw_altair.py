@@ -73,7 +73,7 @@ def draw_networkx_edges(
     ###### node list argument
     if isinstance(edgelist, list):
         # Subset dataframe.
-        df_edges = df_edges.loc[df_edges['pair'].isin(edgelist)]
+        df_edges = edge_chart.data = df_edges.loc[df_edges['pair'].isin(edgelist)]
 
     elif edgelist is not None:
         raise Exception("nodelist must be a list or None.")
@@ -210,7 +210,7 @@ def draw_networkx_arrows(
     ###### node list argument
     if isinstance(edgelist, list):
         # Subset dataframe.
-        df_edge_arrows = df_edge_arrows.loc[df_edge_arrows['pair'].isin(edgelist)]
+        df_edge_arrows = edge_chart.data = df_edge_arrows.loc[df_edge_arrows['pair'].isin(edgelist)]
 
     elif edgelist is not None:
         raise Exception("nodelist must be a list or None.")
@@ -359,7 +359,7 @@ def draw_networkx_nodes(
     ###### node list argument
     if isinstance(nodelist, list):
         # Subset dataframe.
-        df_nodes = df_nodes.loc[nodelist]
+        df_nodes = node_chart.data = df_nodes.loc[nodelist]
 
     elif nodelist is not None:
         raise Exception("nodelist must be a list or None.")
@@ -492,7 +492,7 @@ def draw_networkx_labels(
     ###### node list argument
     if isinstance(nodelist, list):
         # Subset dataframe.
-        df_nodes = df_nodes.loc[nodelist]
+        df_nodes = node_chart.data = df_nodes.loc[nodelist]
 
     elif nodelist is not None:
         raise Exception("nodelist must be a list or None.")
