@@ -70,16 +70,16 @@ def draw_networkx_edges(
 
     # ---------- Handle arguments ------------
 
-    ###### node list argument
+    ###### edge list argument
     if isinstance(edgelist, list):
         # Subset dataframe.
         df_edges = df_edges.loc[df_edges['pair'].isin(edgelist)]
 
     elif edgelist is not None:
-        raise Exception("nodelist must be a list or None.")
+        raise Exception("edgelist must be a list or None.")
 
 
-    ###### Node size
+    ###### Edge size
     if isinstance(width, str):
         encoded_attrs["size"] = alt.Size(width, legend=None)
 
@@ -89,7 +89,7 @@ def draw_networkx_edges(
     else:
         raise Exception("width must be a string or int.")
 
-    ###### node_color
+    ###### edge_color
     if not isinstance(edge_color, str):
         raise Exception("edge_color must be a string.")
 
@@ -207,16 +207,16 @@ def draw_networkx_arrows(
 
     # ---------- Handle arguments ------------
 
-    ###### node list argument
+    ###### edge list argument
     if isinstance(edgelist, list):
         # Subset dataframe.
         df_edge_arrows = df_edge_arrows.loc[df_edge_arrows['pair'].isin(edgelist)]
 
     elif edgelist is not None:
-        raise Exception("nodelist must be a list or None.")
+        raise Exception("edgelist must be a list or None.")
 
 
-    ###### Node size
+    ###### Edge size
     if isinstance(arrow_width, str):
         encoded_attrs["size"] = alt.Size(arrow_width, legend=None)
 
@@ -226,7 +226,7 @@ def draw_networkx_arrows(
     else:
         raise Exception("arrow_width must be a string or int.")
 
-    ###### node_color
+    ###### edge_color
     if not isinstance(edge_color, str):
         raise Exception("edge_color must be a string.")
 
@@ -498,7 +498,7 @@ def draw_networkx_labels(
         raise Exception("nodelist must be a list or None.")
 
 
-    ###### Node size
+    ###### Font size
     if isinstance(font_size, str):
         encoded_attrs["size"] = alt.Size(font_size, legend=None)
 
@@ -506,11 +506,11 @@ def draw_networkx_labels(
         marker_attrs["size"] = font_size
 
     else:
-        raise Exception("node_size must be a string or int.")
+        raise Exception("font_size must be a string or int.")
 
-    ###### node_color
+    ###### font_color
     if not isinstance(font_color, str):
-       raise Exception("node_color must be a string.")
+       raise Exception("font_color must be a string.")
 
     if font_color in df_nodes.columns:
         encoded_attrs["fill"] = font_color
