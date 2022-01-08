@@ -79,9 +79,9 @@ def draw_networkx_edges(
         raise Exception("nodelist must be a list or None.")
 
 
-    ###### Node size
+    ###### Edge width
     if isinstance(width, str):
-        encoded_attrs["size"] = alt.Size(width, legend=None)
+        encoded_attrs["strokeWidth"] = alt.Size(width, legend=None)
 
     elif isinstance(width, float) or isinstance(width, int):
         marker_attrs["strokeWidth"] = width
