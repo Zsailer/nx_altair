@@ -35,8 +35,9 @@ def to_pandas_edges(G, pos, **kwargs):
     """
     # Get all attributes in nodes
     attributes = ['source', 'target', 'x', 'y', 'edge', 'pair']
-    for e in G.edges():
-        attributes += list(G.edges[e].keys())
+    if not (isinstance(G, nx.MultiGraph)):
+        for e in G.edges():
+            attributes += list(G.edges[e].keys())
     attributes = list(set(attributes))
 
 
